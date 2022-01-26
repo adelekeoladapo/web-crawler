@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"golang.org/x/net/html"
 	"io"
 	"log"
 	"os"
@@ -26,4 +27,25 @@ func downloadWebPage(dir string, filename string, body io.Reader) (err error) {
 		return
 	}
 	return
+}
+
+func getLinks(body io.Reader) []string {
+	var links []string
+	tokenizers := html.NewTokenizer(body)
+	for {
+		tokenizer := tokenizers.Next()
+		switch tokenizer {
+		case html.ErrorToken:
+			return links
+		case html.StartTagToken, html.EndTagToken:
+			token := tokenizers.Token()
+			if "a" == token.Data {
+				for _, attr := range token.Attr {
+					if attr.Key == "href" {
+						links = append(links, attr.Val)
+					}
+				}
+			}
+		}
+	}
 }
