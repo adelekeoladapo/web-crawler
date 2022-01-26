@@ -2,24 +2,24 @@ package queue
 
 import "errors"
 
-type Queue interface {
-	Push(item interface{}) error
+type Stack interface {
+	Push(item interface{})
 	Pop() (interface{}, error)
 	Peek() (interface{}, error)
 	Size() int
 	Empty() bool
 }
 
-type SimpleQueue struct {
+type SimpleStack struct {
 	items []interface{}
 }
 
-func (o *SimpleQueue) Push(item interface{}) (err error) {
+func (o *SimpleStack) Push(item interface{}) {
 	o.items = append(o.items, item)
 	return
 }
 
-func (o *SimpleQueue) Pop() (item interface{}, err error) {
+func (o *SimpleStack) Pop() (item interface{}, err error) {
 	item, err = o.Peek()
 	if err != nil {
 		return
@@ -28,7 +28,7 @@ func (o *SimpleQueue) Pop() (item interface{}, err error) {
 	return
 }
 
-func (o *SimpleQueue) Peek() (item interface{}, err error) {
+func (o *SimpleStack) Peek() (item interface{}, err error) {
 	if o.Size() == 0 {
 		err = errors.New("empty que")
 		return
@@ -37,15 +37,15 @@ func (o *SimpleQueue) Peek() (item interface{}, err error) {
 	return
 }
 
-func (o *SimpleQueue) Size() (size int) {
+func (o *SimpleStack) Size() (size int) {
 	size = len(o.items)
 	return
 }
 
-func (o *SimpleQueue) Empty() bool {
+func (o *SimpleStack) Empty() bool {
 	return !(len(o.items) > 0)
 }
 
-func GetSimpleQueue() Queue {
-	return &SimpleQueue{}
+func GetSimpleStack() Stack {
+	return &SimpleStack{}
 }
