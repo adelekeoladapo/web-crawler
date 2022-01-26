@@ -7,6 +7,7 @@ type Queue interface {
 	Pop() (interface{}, error)
 	Peek() (interface{}, error)
 	Size() int
+	Empty() bool
 }
 
 type SimpleQueue struct {
@@ -39,6 +40,10 @@ func (o *SimpleQueue) Peek() (item interface{}, err error) {
 func (o *SimpleQueue) Size() (size int) {
 	size = len(o.items)
 	return
+}
+
+func (o *SimpleQueue) Empty() bool {
+	return !(len(o.items) > 0)
 }
 
 func GetSimpleQueue() Queue {
