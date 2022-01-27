@@ -20,6 +20,9 @@ func (o *MyCrawler) Process(startingUrl, downloadDir string) {
 	if err := utils.CreateDirectory(downloadDir); err != nil {
 		log.Fatal("Error occurred while creating directory ", err)
 	}
+	if strings.HasSuffix(startingUrl, "/") {
+		startingUrl = startingUrl[:len(startingUrl)-1]
+	}
 	o.pendingUrls.Enqueue(startingUrl)
 	for !o.pendingUrls.Empty() {
 		url, err := o.pendingUrls.Dequeue()
