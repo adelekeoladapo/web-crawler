@@ -15,6 +15,7 @@ import (
 
 type MyCrawler struct {
 	pendingUrls queue.SimpleQueue
+	mu          sync.Mutex
 	crawledUrls []string
 }
 
@@ -62,7 +63,9 @@ func (o *MyCrawler) doCrawl(downloadDir string) {
 		body, _ = utils.LoadUrl(strUrl)
 		urls := utils.GetLinks(body)
 		o.updatePendingUrls(strUrl, urls)
+		o.mu.Lock()
 		o.crawledUrls = append(o.crawledUrls, strUrl)
+		o.mu.Unlock()
 	}
 }
 
