@@ -1,21 +1,23 @@
 package utils
 
 import (
+	"errors"
 	"golang.org/x/net/html"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 )
 
-func createDirectory(path string) (err error) {
-	if err = os.Mkdir(path, os.ModePerm); err != nil {
+func CreateDirectory(path string) (err error) {
+	if err = os.MkdirAll(path, os.ModePerm); err != nil {
 		log.Printf("Error occurred while creating directory: %s. ", err)
 	}
 	return
 }
 
-func downloadWebPage(dir string, filename string, body io.Reader) (err error) {
+func DownloadWebPage(dir string, filename string, body io.Reader) (err error) {
 	file, err := os.Create(filepath.Join(dir, filepath.Base(filename+".html")))
 	if err != nil {
 		log.Println("Error occurred while creating file. ", err)
@@ -29,7 +31,7 @@ func downloadWebPage(dir string, filename string, body io.Reader) (err error) {
 	return
 }
 
-func getLinks(body io.Reader) []string {
+func GetLinks(body io.Reader) []string {
 	var links []string
 	tokenizers := html.NewTokenizer(body)
 	for {
@@ -48,4 +50,15 @@ func getLinks(body io.Reader) []string {
 			}
 		}
 	}
+}
+
+func LoadUrl(url string) (body io.Reader, err error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Println("Error occurred while loading url ", url)
+		err = errors.New("Error occurred while loading url ")
+		return
+	}
+	body = resp.Body
+	return
 }
