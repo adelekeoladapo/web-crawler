@@ -30,7 +30,7 @@ func (o *MyCrawler) Process(startingUrl, downloadDir string) {
 		if o.isUrlCrawled(strUrl) {
 			continue
 		}
-		fmt.Println("Crawling . . .  ", url)
+		fmt.Println(" . . .  ", url, " . . .")
 		body, err := utils.LoadUrl(strUrl)
 		if err != nil {
 			log.Println("Error occurred while loading url ", strUrl)
