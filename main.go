@@ -7,11 +7,8 @@ import (
 
 func main() {
 	fmt.Println("Hello crawler")
-	url := "google.com"
+	url := "https://gobyexample.com"
 	downloadDir := "downloads/files"
-
 	webCrawler := implementation.GetMyCrawler()
-
 	webCrawler.Process(url, downloadDir)
-
 }
