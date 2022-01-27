@@ -9,6 +9,8 @@ import (
 	"log"
 	"path"
 	"strings"
+	"sync"
+	"time"
 )
 
 type MyCrawler struct {
@@ -24,6 +26,23 @@ func (o *MyCrawler) Process(startingUrl, downloadDir string) {
 		startingUrl = startingUrl[:len(startingUrl)-1]
 	}
 	o.pendingUrls.Enqueue(startingUrl)
+
+	var wg sync.WaitGroup
+	doCrawl := func(u string) {
+		o.doCrawl(u)
+		wg.Done()
+	}
+	wg.Add(4)
+	go doCrawl(downloadDir)
+	time.Sleep(3 * time.Second)
+	go doCrawl(downloadDir)
+	go doCrawl(downloadDir)
+	go doCrawl(downloadDir)
+	wg.Wait()
+	fmt.Println(len(o.crawledUrls), " urls crawled successfully")
+}
+
+func (o *MyCrawler) doCrawl(downloadDir string) {
 	for !o.pendingUrls.Empty() {
 		url, err := o.pendingUrls.Dequeue()
 		if err != nil {
@@ -45,7 +64,6 @@ func (o *MyCrawler) Process(startingUrl, downloadDir string) {
 		o.updatePendingUrls(strUrl, urls)
 		o.crawledUrls = append(o.crawledUrls, strUrl)
 	}
-	fmt.Println(len(o.crawledUrls), " urls crawled successfully")
 }
 
 func (o *MyCrawler) isUrlCrawled(url string) bool {
